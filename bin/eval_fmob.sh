@@ -14,7 +14,7 @@ else
     prog="deepwalk"
 fi
 
-datasets=("youtube" "twitter" "friendster")
+datasets=("youtube" "twitter" "friendster" "uk-union" "yahoo")
 num_epoch=10
 walk_len=80
 
@@ -38,9 +38,13 @@ do
     input_file=`realpath ${data_dir}/${graph}.txt`
     output_file_prefix=${output_dir}/${graph}
 
-    cmd="${program} -f text -g ${input_file} -e ${num_epoch} -l ${walk_len} ${app_flags} 2>${output_file_prefix}.out.txt"
-    echo ${cmd}
-    eval ${cmd}
+    if [ -f "$input_file" ]; then
+        cmd="${program} -f text -g ${input_file} -e ${num_epoch} -l ${walk_len} ${app_flags} 2>${output_file_prefix}.out.txt"
+        echo ${cmd}
+        eval ${cmd}
+    else
+        echo "$input_file does not exist. Skip evaluation of $graph"
+    fi
 done
 
 echo "================================================="

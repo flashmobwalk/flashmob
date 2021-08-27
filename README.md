@@ -19,7 +19,7 @@ The instructions and evaluations in this document are also verified on two AWS E
 In default the evaluation script will download and evaluate 3 graphs, including Youtube, Twitter, and Friendster.
 To download and evaluate all 3 graphs, at least 64GB DRAM memory and 80GB free disk space are recommended.
 
-Besides, there are 2 additional graphs evaluated in the paper, i.e. UK-Union and Yahoo. To download and evaluate these 2 graphs, 256GB memory and 250GB additional disk space are recommended.
+Besides, there are 2 larger graphs evaluated in the paper, i.e. UK-Union and Yahoo. To download and evaluate these 2 graphs, 256GB memory and 250GB additional (330GB in total) disk space are recommended.
 
 ### Expected Time Usage
 
@@ -76,15 +76,28 @@ in which case just re-run the tests and it shall pass.
 
 ### Download Datasets
 
-The following command will automatically download and unzip Youtube, Twitter and Friendster graphs.
-Check [here](#UK-and-Yahoo-Graphs) for downloading UK and Yahoo graphs.
+To download the Youtube, Twitter and Friendster graphs:
 
 ```bash
-# ./bin/download.sh [data-directory]
-./bin/download.sh ./dataset
+# ./bin/download-small.sh [data-directory]
+./bin/download-small.sh ./dataset
 ```
 
+To download the UK graph:
+
+```bash
+# Java is required to decode the downloaded data
+sudo apt-get install openjdk-8-jdk
+# ./bin/download-uk.sh [data-directory]
+./bin/download-uk.sh ./dataset
+```
+
+Yahoo: This graph is downloaded from [here](https://webscope.sandbox.yahoo.com/). One needs a Yahoo! account and needs to fill an application to get the graph data.
+
+
 ### Evaluate FlashMob
+
+The script below will evaluate FlashMob on all 5 graphs. If a graph file doesn't exist, the script will skip it and continue to evaluate on other graphs.
 
 Evaluate DeepWalk:
 
@@ -100,7 +113,9 @@ Evaluate node2vec:
 ./bin/eval_fmob.sh ./dataset ./output/node2vec node2vec
 ```
 
-The output could be found at ./output directory:
+The output could be found at ./output directory.
+Suppose only the first 3 graphs have been downloaded:
+
 ```bash
 output
 ├── deepwalk
@@ -124,12 +139,6 @@ The evaluation results on the 2 AWS EC2 instances are listed below.
 |--------------------|---------|---------|------------|
 | m5.12xlarge        |  102.95 |  263.64 |   233.67   |
 | c5n.18xlarge       |  106.38 |  320.06 |   272.30   |
-
-### UK and Yahoo Graphs
-
-- UK-Union: This graph is downloaded from [here](http://law.di.unimi.it/datasets.php). The downloaded graph is highly compressed. The tool to decompress it can also be found [here](http://law.di.unimi.it/index.php).
-
-- Yahoo: This graph is downloaded from [here](https://webscope.sandbox.yahoo.com/). One needs a Yahoo! account and needs to fill an application to get the graph data.
 
 ## Extended FlashMob Options
 
