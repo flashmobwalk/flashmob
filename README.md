@@ -19,13 +19,20 @@ The instructions and evaluations in this document are also verified on two AWS E
 In default the evaluation script will download and evaluate 3 graphs, including Youtube, Twitter, and Friendster.
 To download and evaluate all 3 graphs, at least 64GB DRAM memory and 80GB free disk space are recommended.
 
-Besides, there are 2 larger graphs evaluated in the paper, i.e. UK-Union and Yahoo. To download and evaluate these 2 graphs, 256GB memory and 250GB additional (330GB in total) disk space are recommended.
+Besides, there are 2 larger graphs evaluated in the paper, i.e. UK-Union and Yahoo. To download and evaluate these 2 graphs, 256GB memory and 350GB additional (430GB in total) disk space are recommended.
 
 ### Expected Time Usage
 
-On the m5.12xlarge instance, the compilation, installation, and testing take less than 5 min.
-The graph downloading takes about 65 min.
+The compilation, installation, and testing of FlashMob take less than 5 min.
+
+For the Youtube, Twitter and Friendster graphs, on the m5.12xlarge instance, the downloading takes about 65 min.
 And the evaluation of random walk of DeepWalk and node2vec takes about 20 min and 35 min, respectively.
+
+For the UK-Union graph, on the Dell PowerEdge R740 server, the downloading takes about 55 min.
+And the evaluation of random walk of DeepWalk and node2vec takes about 20 min and 45 min, respectively.
+
+For the Yahoo graph,  on the Dell PowerEdge R740 server, the dataset preparing takes about 35 min.
+And the evaluation of random walk of DeepWalk and node2vec takes about 40 min and 130 min, respectively.
 
 ## Setup
 
@@ -76,6 +83,8 @@ in which case just re-run the tests and it shall pass.
 
 ### Download Datasets
 
+**Youtube, Twitter and Friendster graphs**
+
 To download the Youtube, Twitter and Friendster graphs:
 
 ```bash
@@ -83,7 +92,9 @@ To download the Youtube, Twitter and Friendster graphs:
 ./bin/download-small.sh ./dataset
 ```
 
-To download the UK graph:
+**UK-Union graph**
+
+To download the UK-Union graph:
 
 ```bash
 # Java is required to decode the downloaded data
@@ -92,8 +103,36 @@ sudo apt-get install openjdk-8-jdk
 ./bin/download-uk.sh ./dataset
 ```
 
-Yahoo: This graph is downloaded from [here](https://webscope.sandbox.yahoo.com/). One needs a Yahoo! account and needs to fill an application to get the graph data.
+**Yahoo graph**
 
+This graph is downloaded from [here](https://webscope.sandbox.yahoo.com/). One needs a Yahoo! account and needs to fill an application to get the graph data.
+
+To request the Yahoo graph:
+
+- Open https://webscope.sandbox.yahoo.com/ in the browser.
+- Click "Graph and Social Data"
+- Find "G2 - Yahoo! AltaVista Web Page Hyperlink Connectivity Graph, circa 2002 (multi part) (Hosted on AWS)"
+- Click "Select this Dataset".
+- Click "Go To Checkout". If the applicant hasn't login, the website will remind the applicant to login or register an account and then repeat the above steps.
+- Follow the requirements of the checkout process, such as answering what the purpose of requiring the dataset is.
+
+After all the process, the applicant then waits for the reply. If the requests get approved, the applicant will receive an email from Yahoo, with a temporary link to download the graph.
+
+The downloaded data are listed below, among which `ydata-yaltavista-webmap-v1_0_links-1.txt.gz` and `ydata-yaltavista-webmap-v1_0_links-2.txt.gz` will be used in this evaluation:
+
+```bash
+├── README
+├── ydata-yaltavista-webmap-v1_0_id_url.txt.gz
+├── ydata-yaltavista-webmap-v1_0_links-1.txt.gz
+└── ydata-yaltavista-webmap-v1_0_links-2.txt.gz
+```
+
+To unzip and format the Yahoo graph for this evaluation, run the following command (substitute [yahoo-directory] with the path of the directory that holds the downloaded Yahoo graphs):
+
+```bash
+# ./bin/prepare-yahoo.sh [yahoo-directory] [data-directory]
+./bin/prepare-yahoo.sh [yahoo-directory] ./dataset
+```
 
 ### Evaluate FlashMob
 

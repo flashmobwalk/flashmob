@@ -43,7 +43,7 @@ void read_binary_graph(const char* fname, std::vector<T> &edges) {
     fseek(f, 0, SEEK_END);
     size_t total_size = ftell(f);
     size_t total_e_num = total_size / sizeof(T);
-	edges.resize(total_e_num);
+    edges.resize(total_e_num);
 
     fseek(f, 0, SEEK_SET);
     auto ret = fread(edges.data(), sizeof(T), total_e_num, f);
@@ -75,17 +75,17 @@ void write_binary_graph(const char* fname, std::vector<T> &edges, std::stringstr
 
 void read_text_graph(const char* fname, std::vector<Edge> &edges) {
     edges.clear();
-	vertex_id_t a, b;
-	char temp_str[200];
+    vertex_id_t a, b;
+    char temp_str[200];
     FILE *f = fopen(fname, "r");
     CHECK(f != NULL);
-	while (fgets(temp_str, 200, f)) {
-		if (temp_str[0] == '#') {
-			continue;
-		}
-		sscanf(temp_str, "%u %u", &a, &b);
-		edges.push_back(Edge(a, b));
-	}
+    while (fgets(temp_str, 200, f)) {
+        if (temp_str[0] == '#') {
+            continue;
+        }
+        sscanf(temp_str, "%u %u", &a, &b);
+        edges.push_back(Edge(a, b));
+    }
     fclose(f);
 }
 

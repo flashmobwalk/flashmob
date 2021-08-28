@@ -138,12 +138,17 @@ void dp(
             candidate_partition_sc[g_i].push_back(group_sc);
 
             // The following code will add second level partitioning into the DP model.
-            double shuffle_overhead = 14;
-            hint.partition_level = 1;
-            hint.total_time += get_walker_num(group_vertex_begin, group_vertex_end) * shuffle_overhead;
-            hint.step_time = hint.total_time / get_walker_num(group_vertex_begin, group_vertex_end);
-            candidate_group_hints[g_i].push_back(hint);
-            candidate_partition_sc[g_i].push_back(group_sc);
+            // Temporarily disable this to avoid a numa-allocation bug: when there are
+            // too many partitions, the numa_alloc_* functions will fail. The root cause
+            // is that there are only certain amount of memories that can be allocated via
+            // the above functions for each process. And FlashMob SamplerManager allocates
+            // a memory for each partition. To fix in the future.
+            // double shuffle_overhead = 14;
+            // hint.partition_level = 1;
+            // hint.total_time += get_walker_num(group_vertex_begin, group_vertex_end) * shuffle_overhead;
+            // hint.step_time = hint.total_time / get_walker_num(group_vertex_begin, group_vertex_end);
+            // candidate_group_hints[g_i].push_back(hint);
+            // candidate_partition_sc[g_i].push_back(group_sc);
         }
     }
 

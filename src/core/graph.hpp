@@ -228,8 +228,6 @@ public:
         LOG(WARNING) << block_mid_str(1) << "Edges number: " << e_num;
         LOG(WARNING) << block_mid_str(1) << "As undirected: " << (as_undirected ? "true" : "false");
 
-
-        timer.restart();
         vertex_units.resize(v_num);
         #pragma omp parallel for
         for (vertex_id_t v_i = 0; v_i < v_num; v_i++) {
