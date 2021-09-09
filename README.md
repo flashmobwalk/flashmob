@@ -21,18 +21,22 @@ To download and evaluate all 3 graphs, at least 64GB DRAM memory and 80GB free d
 
 Besides, there are 2 larger graphs evaluated in the paper, i.e. UK-Union and Yahoo. To download and evaluate these 2 graphs, 256GB memory and 350GB additional (430GB in total) disk space are recommended.
 
+To evaluate KnightKing on all 5 graphs, additional 64GB (500GB in total) disk space are recommended.
+
 ### Expected Time Usage
 
 The compilation, installation, and testing of FlashMob take less than 5 min.
 
 For the Youtube, Twitter and Friendster graphs, on the m5.12xlarge instance, the downloading takes about 65 min.
-And the evaluation of random walk of DeepWalk and node2vec takes about 20 min and 35 min, respectively.
+And the FlashMob evaluation of random walk of DeepWalk and node2vec takes about 20 min and 35 min, respectively.
 
 For the UK-Union graph, on the Dell PowerEdge R740 server, the downloading takes about 55 min.
-And the evaluation of random walk of DeepWalk and node2vec takes about 20 min and 45 min, respectively.
+And the FlashMob evaluation of random walk of DeepWalk and node2vec takes about 20 min and 45 min, respectively.
 
 For the Yahoo graph,  on the Dell PowerEdge R740 server, the dataset preparing takes about 35 min.
-And the evaluation of random walk of DeepWalk and node2vec takes about 40 min and 130 min, respectively.
+And the FlashMob evaluation of random walk of DeepWalk and node2vec takes about 40 min and 130 min, respectively.
+
+On the Dell PowerEdge R740 server, evaluating KnightKing on all 5 graphs takes about 20 hours for DeepWalk and 26 hours for node2vec.
 
 ## Setup
 
@@ -41,6 +45,14 @@ And the evaluation of random walk of DeepWalk and node2vec takes about 40 min an
 ```bash
 sudo apt-get update
 sudo apt-get install cmake g++ autoconf libtool libnuma-dev -y
+```
+
+### Configure the System
+
+To run evaluation on physical cores:
+
+```bash
+sudo sh -c "echo off > /sys/devices/system/cpu/smt/control"
 ```
 
 ### Compile FlashMob
@@ -178,6 +190,42 @@ The evaluation results on the 2 AWS EC2 instances are listed below.
 |--------------------|---------|---------|------------|
 | m5.12xlarge        |  102.95 |  263.64 |   233.67   |
 | c5n.18xlarge       |  106.38 |  320.06 |   272.30   |
+
+### Evaluate KnightKing
+
+Install dependencies:
+
+```bash
+sudo apt-get install -y openmpi-bin libopenmpi-dev python
+```
+
+Install KnightKing:
+
+```bash
+git clone https://github.com/KnightKingWalk/KnightKing.git --recurse-submodules
+# The #walkers will be larger than 2^32
+sed -i 's/typedef uint32_t walker_id_t;/typedef uint64_t walker_id_t;/' ./KnightKing/include/type.hpp
+cd KnightKing
+
+mkdir build && cd build
+cmake ..
+make & make install
+cd ../..
+```
+
+Evaluate DeepWalk:
+
+```bash
+# ./bin/eval_knk.sh [dataset-directory] [output-directory] [app]
+./bin/eval_knk.sh ./dataset ./output/knk/deepwalk deepwalk
+```
+
+Evaluate node2vec:
+
+```bash
+# ./bin/eval_knk.sh [dataset-directory] [output-directory] [app]
+./bin/eval_knk.sh ./dataset ./output/knk/node2vec node2vec
+```
 
 ## Extended FlashMob Options
 

@@ -332,7 +332,6 @@ void make_graph(
     uint64_t total_walker = walker_num_func(graph.v_num, graph.e_num);
     uint64_t epoch_walker = estimate_epoch_walker(graph.v_num, graph.e_num, graph.e_num, total_walker, walk_len, mtcfg.socket_num, mem_quota, is_node2vec ? BloomFilter::cal_hash_table_size(as_undirected ? graph.e_num / 2 : graph.e_num): 0);
     double walker_per_edge = (double)epoch_walker / graph.e_num;
-    LOG(WARNING) << block_mid_str() << "walker_per_edge " << walker_per_edge;
 
     GraphHint graph_hint;
     get_partition_hint(walker_per_edge, &graph, mtcfg, &graph_hint);

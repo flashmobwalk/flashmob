@@ -196,7 +196,8 @@ public:
         }
         #if PROFILE_IF_BRIEF
         LOG(INFO) << block_mid_str() << "Total walkers: " <<  _walker_num << ", max_epoch_walkers: " << temp_max_epoch_walker_num << ", total epochs: " << epoch_num;
-        LOG(INFO) << block_mid_str() << "Epoch walkers:" << epoch_walker_ss.str();
+        LOG(INFO) << block_mid_str() << "Epoch walkers: " << epoch_walker_ss.str();
+        LOG(WARNING) << block_mid_str() << "Walker density: " << (double) temp_max_epoch_walker_num / graph->e_num;
         #endif
         max_epoch_walker_num = temp_max_epoch_walker_num;
 

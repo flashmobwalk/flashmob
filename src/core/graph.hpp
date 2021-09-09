@@ -295,6 +295,7 @@ public:
                 shuffle_partition_num = std::min(mtcfg.thread_num, partition_num);
             }
         }
+        LOG(WARNING) << block_mid_str(1) << "Partition the graph according to hint in " << timer.duration() << " seconds";
 
         std::vector<vertex_id_t> id2newid(v_num, 0);
 
