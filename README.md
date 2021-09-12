@@ -312,6 +312,27 @@ Example usage:
 ./bin/node2vec -f text -g ./dataset/youtube.txt -e 10 -l 80 -p 2 -q 0.5
 ```
 
+## Validation
+
+Validate the functional correctness of FlashMob on randomly generated graphs (expected time usage: 1 min):
+
+```bash
+ctest
+```
+
+Validate the functional correctness of FlashMob on Youtube, Twitter, and Friendster graphs (expected time usage: @@ hours):
+
+```bash
+# ./bin/eval_knk.sh [dataset-directory] [small | large | all]
+./bin/validate-fmob.sh ./dataset small
+```
+
+Validate the functional correctness of FlashMob on UK-Uion and Yahoo graphs (expected time usage: @@ hours):
+```bash
+# ./bin/eval_knk.sh [dataset-directory] [small | large | all]
+./bin/validate-fmob.sh ./dataset large
+```
+
 ## License
 
 Code in this repository, except those under the `third_party` directory, are licensed under the MIT license, found in the `LICENSE` file.
