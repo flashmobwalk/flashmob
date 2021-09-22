@@ -12,8 +12,8 @@
 
 #include "io.hpp"
 #include "log.hpp"
-#include "../core/partition.hpp"
-#include "test.hpp"
+#include "../../core/partition.hpp"
+#include "../test.hpp"
 #include "test_graph.hpp"
 
 void test_edges(GraphMocker* graph, std::vector<Edge> &_std_edges, bool as_undirected)

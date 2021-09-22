@@ -7,7 +7,7 @@
 
 #include <gtest/gtest.h>
 
-#include "../core/graph.hpp"
+#include "../../core/graph.hpp"
 
 void compare_edges(std::vector<Edge> &std_edges, std::vector<Edge> &cmp_edges) {
     auto cmp_func = [](const Edge &a, const Edge &b) {

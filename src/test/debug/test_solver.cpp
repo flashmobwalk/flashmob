@@ -13,10 +13,10 @@
 
 #include "io.hpp"
 #include "log.hpp"
-#include "../core/graph.hpp"
-#include "../core/solver.hpp"
-#include "../core/partition.hpp"
-#include "test.hpp"
+#include "../../core/graph.hpp"
+#include "../../core/solver.hpp"
+#include "../../core/partition.hpp"
+#include "../test.hpp"
 #include "test_graph.hpp"
 #include "knightking/test_walk.hpp"
 

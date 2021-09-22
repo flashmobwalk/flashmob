@@ -71,47 +71,15 @@ class FMobSolver{
     }
 
     vertex_id_t* get_walker_start_vertices(walker_id_t epoch_walker_num) {
-        #ifdef UNIT_TEST
-        if (true) {
-        #else
+        const vertex_id_t v_num = graph->v_num;
         if (walker_start_vertices_num < epoch_walker_num) {
-        #endif
-            walker_id_t progress = 0;
-            auto *old_walker_start_vertices = walker_start_vertices;
-            auto old_walker_start_vertices_num = walker_start_vertices_num;
-            walker_start_vertices = new vertex_id_t[epoch_walker_num];
-            walker_start_vertices_num = epoch_walker_num;
-
-            if (old_walker_start_vertices != nullptr) {
-                #ifdef UNIT_TEST
-                for (progress = 0; progress * 4 < old_walker_start_vertices_num && progress < walker_start_vertices_num; progress++) {
-                    walker_start_vertices[progress] = old_walker_start_vertices[progress * 4];
-                }
-                #else
-                #pragma omp parallel for
-                for (walker_id_t w_i = 0; w_i < old_walker_start_vertices_num; w_i++) {
-                    walker_start_vertices[w_i] = old_walker_start_vertices[w_i];
-                }
-                progress = old_walker_start_vertices_num;
-                #endif
-                delete []old_walker_start_vertices;
-            }
-
-            const walker_id_t walk_task_size = 1024;
-            #pragma omp parallel
-            {
-                walker_id_t next_workload;
-                // TODO: If sampling starting vertices becomes bottleneck, try to use faster random number generator.
-                MTRandGen gen;
-                while((next_workload =  __sync_fetch_and_add(&progress, walk_task_size)) < epoch_walker_num) {
-                    walker_id_t work_begin = next_workload;
-                    walker_id_t work_end = std::min(next_workload + walk_task_size, epoch_walker_num);
-                    for (walker_id_t w_i = work_begin; w_i < work_end; w_i++) {
-                        walker_start_vertices[w_i] = gen.gen(graph->v_num);
-                    }
-                }
-            }
+            wkrm.dealloc_walker_array(walker_start_vertices);
+            walker_start_vertices = wkrm.alloc_walker_array<vertex_id_t>();
         }
+        walker_start_vertices_num = epoch_walker_num;
+        wkrm.process_walkers([&](walker_id_t w_i) {
+            walker_start_vertices[w_i] = rands[omp_get_thread_num()]->gen(v_num);
+        }, epoch_walker_num);
         return walker_start_vertices;
     }
 
@@ -132,7 +100,7 @@ public:
             delete []rands;
         }
         if (walker_start_vertices != nullptr) {
-            delete []walker_start_vertices;
+            wkrm.dealloc_walker_array(walker_start_vertices);
         }
     }
 

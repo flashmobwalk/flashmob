@@ -320,7 +320,7 @@ Validate the functional correctness of FlashMob on randomly generated graphs (ex
 ctest
 ```
 
-Validate the functional correctness of FlashMob on Youtube, Twitter, and Friendster graphs (expected time usage: @@ hours):
+Validate the functional correctness of FlashMob on Youtube, Twitter, and Friendster graphs (expected time usage: 24 hours):
 
 ```bash
 # ./bin/eval_knk.sh [dataset-directory] [small | large | all]

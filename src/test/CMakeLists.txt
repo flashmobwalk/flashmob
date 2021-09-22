@@ -1,16 +1,2 @@
-SET(CMAKE_CXX_FLAGS_BASE ${CMAKE_CXX_FLAGS})
-
-set(CMAKE_BUILD_TYPE Debug)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_BASE} -DCMAKE_BUILD_TYPE=Debug")
-# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -march=native")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUNIT_TEST")
-
-add_exec(test_graph)
-add_exec(test_solver)
-add_exec(test_node2vec)
-
-set(CMAKE_BUILD_TYPE Release)
-set(CMAKE_CXX_FLAGS_OPT "-O3 -march=native")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_BASE} ${CMAKE_CXX_FLAGS_OPT}")
-add_exec(test_dataset)
+add_subdirectory(debug)
+add_subdirectory(release)

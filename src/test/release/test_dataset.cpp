@@ -13,9 +13,9 @@
 #include "io.hpp"
 #include "log.hpp"
 #include "option.hpp"
-#include "../core/partition.hpp"
-#include "../core/solver.hpp"
-#include "test.hpp"
+#include "../../core/partition.hpp"
+#include "../../core/solver.hpp"
+#include "../test.hpp"
 
 struct EdgeCounter {
     vertex_id_t dst;

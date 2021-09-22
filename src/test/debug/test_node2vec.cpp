@@ -12,12 +12,12 @@
 
 #include "io.hpp"
 #include "log.hpp"
-#include "test.hpp"
+#include "../test.hpp"
 #include "test_graph.hpp"
 #include "knightking/test_walk.hpp"
 #include "knightking/test_node2vec.hpp"
-#include "../core/graph.hpp"
-#include "../core/solver.hpp"
+#include "../../core/graph.hpp"
+#include "../../core/solver.hpp"
 
 void test_node2vec(GraphFormat graph_format, MultiThreadConfig mtcfg)
 {
