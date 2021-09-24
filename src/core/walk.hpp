@@ -29,6 +29,8 @@ class WalkManager {
     real_t n2v_min_1_q;
     real_t n2v_min_1_p;
     real_t n2v_upperbound;
+    real_t div_p;
+    real_t div_q;
     bool is_node2vec;
 
 public:
@@ -55,6 +57,8 @@ public:
         n2v_upperbound = std::max((real_t) 1.0, std::max(1 / p, 1 / q));
         n2v_min_1_p = std::min(1.0, 1.0 / p);
         n2v_min_1_q = std::min(1.0, 1.0 / q);
+        div_p = 1.0 / p;
+        div_q = 1.0 / q;
         is_node2vec = true;
     }
 
@@ -75,16 +79,16 @@ public:
      */
     bool node2vec_accept(vertex_id_t previous_vertex, vertex_id_t current_vertex, vertex_id_t next_vertex, real_t prob, int socket) {
         if (previous_vertex == next_vertex) {
-            return prob <= n2v_min_1_p;
+            return prob <= div_p;
         }
         if (prob <= n2v_min_1_q) {
             return true;
         }
         real_t val;
         if (graph->has_neighbor(previous_vertex, next_vertex, socket)) {
-            val = 1;
+            val = 1.0;
         } else {
-            val = 1 / q;
+            val = div_q;
         }
         return prob <= val;
     }

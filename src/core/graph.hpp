@@ -478,18 +478,22 @@ public:
     // Create bloom filter for node2vec
     void prepare_neighbor_query() {
         Timer timer;
-        #pragma omp parallel for
-        for (vertex_id_t v_i = 0; v_i < v_num; v_i++) {
-            AdjList* adj= adjlists[0] + v_i;
-            std::sort(adj->begin, adj->begin + adj->degree, [](const AdjUnit& a, const AdjUnit& b){return a.neighbor < b.neighbor;});
+        #pragma omp parallel for schedule(dynamic, 1)
+        for (int p_i = 0; p_i < partition_num; p_i++) {
+            for (vertex_id_t v_i = partition_begin[p_i]; v_i < partition_end[p_i]; v_i++) {
+                AdjList* adj= adjlists[0] + v_i;
+                std::sort(adj->begin, adj->begin + adj->degree, [](const AdjUnit& a, const AdjUnit& b){return a.neighbor < b.neighbor;});
+            }
         }
         bf.reset(new BloomFilter(mtcfg));
         bf->create(as_undirected ? e_num / 2 : e_num);
-        #pragma omp parallel for
-        for (vertex_id_t v_i = 0; v_i < v_num; v_i++) {
-            AdjList* adj = adjlists[0] + v_i;
-            for (auto *edge = adj->begin; edge < adj->begin + adj->degree; edge++) {
-                bf->insert(v_i, edge->neighbor);
+        #pragma omp parallel for schedule(dynamic, 1)
+        for (int p_i = 0; p_i < partition_num; p_i++) {
+            for (vertex_id_t v_i = partition_begin[p_i]; v_i < partition_end[p_i]; v_i++) {
+                AdjList* adj = adjlists[0] + v_i;
+                for (auto *edge = adj->begin; edge < adj->begin + adj->degree; edge++) {
+                    bf->insert(v_i, edge->neighbor);
+                }
             }
         }
         LOG(WARNING) << block_mid_str() << "Prepare neighborhood query in " << timer.duration() << " seconds";

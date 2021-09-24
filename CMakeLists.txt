@@ -58,11 +58,16 @@ else ()
 endif()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DPROFILE_LEVEL=${PROFILE_LEVEL}")
 
+if (PROFILE_BF)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DPROFILE_BF")
+endif()
+
 if (ENABLE_PERF)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_PERF")
 elseif (ENABLE_VTUNE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_VTUNE")
 endif()
+
 message("Top level CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 
 # output directory

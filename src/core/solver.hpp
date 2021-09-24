@@ -321,6 +321,14 @@ public:
         }
         #endif
 
+#ifdef PROFILE_BF
+        if (is_node2vec) {
+            uint64_t qhit = graph->bf->qhit_counter;
+            uint64_t qmiss = graph->bf->qmiss_counter;
+            LOG(WARNING) << "BloomFilter: hit " << (double) qhit / terminated_walk_step << ", miss " << (double) qmiss / terminated_walk_step << ", hit rate " << (qhit == 0 ? (double) 0.0 : (double) qhit / (qhit + qmiss));
+        }
+#endif
+
         LOG(WARNING) << "time: " << total_walk_time << " s" \
             << ", step: " << number_string(terminated_walk_step) \
             << ", throughput: " << number_string(terminated_walk_step / total_walk_time) << "/s" \

@@ -19,7 +19,7 @@
 #include "../../core/graph.hpp"
 #include "../../core/solver.hpp"
 
-void test_node2vec(GraphFormat graph_format, MultiThreadConfig mtcfg)
+void test_node2vec(real_t p, real_t q, GraphFormat graph_format, MultiThreadConfig mtcfg)
 {
     uint64_t mem_quota = 0; // mem_quota is not really used when UNIT_TEST is defined
     unsigned walk_len = 40 + rand() % 40;
@@ -33,8 +33,6 @@ void test_node2vec(GraphFormat graph_format, MultiThreadConfig mtcfg)
 
     FMobSolver* solver = new FMobSolver(&graph, mtcfg);
 
-    real_t p = 2;
-    real_t q = 0.5;
     solver->set_node2vec(p, q);
     uint64_t walker_num = walker_num_func(graph.v_num, graph.e_num);
     std::vector<vertex_id_t> walks((size_t) walk_len * walker_num);
@@ -66,7 +64,9 @@ void test_task(MultiThreadConfig mtcfg) {
         vertex_id_t v_num = std::min((unsigned)(e_num / 2), (unsigned)(100 + rand() % ((e_num + 9) / 3)));
         gen_undirected_graph(v_num, e_num, edges);
         write_text_graph(test_graph_path, edges);
-        test_node2vec(TextGraphFormat, mtcfg);
+        test_node2vec(0.5, 2.0, TextGraphFormat, mtcfg);
+        test_node2vec(2.0, 0.5, TextGraphFormat, mtcfg);
+        test_node2vec(10, 10, TextGraphFormat, mtcfg);
     }
     rm_test_graph_file();
 }
