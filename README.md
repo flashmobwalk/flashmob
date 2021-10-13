@@ -327,7 +327,7 @@ Validate the functional correctness of FlashMob on Youtube, Twitter, and Friends
 ./bin/validate-fmob.sh ./dataset small
 ```
 
-Validate the functional correctness of FlashMob on UK-Uion and Yahoo graphs (expected time usage: @@ hours):
+Validate the functional correctness of FlashMob on UK-Uion and Yahoo graphs (expected time usage: 96 hours):
 ```bash
 # ./bin/eval_knk.sh [dataset-directory] [small | large | all]
 ./bin/validate-fmob.sh ./dataset large

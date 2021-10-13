@@ -207,12 +207,13 @@ void validate_prob_distribution(bool is_node2vec) {
     vertex_id_t v_num = graph.v_num;
     edge_id_t e_num = graph.e_num;
 
-    opt.mem_quota -= sizeof(double) * v_num * 2 + sizeof(EdgeCounterList) * v_num + sizeof(EdgeCounter) * e_num;
+    size_t validator_size = sizeof(double) * v_num * 2 + sizeof(EdgeCounterList) * v_num + sizeof(EdgeCounter) * e_num;
     FMobSolver solver(&graph, opt.mtcfg);
     if (is_node2vec) {
         solver.set_node2vec(1.0, 1.0);
     }
-    solver.prepare(walker_num_func(v_num, e_num), walk_len, opt.mem_quota);
+    CHECK(opt.mem_quota > validator_size) << "Not enough memory";
+    solver.prepare(walker_num_func(v_num, e_num), walk_len, opt.mem_quota - validator_size);
     printf("Initiate Graph and Solver in %.3lf seconds\n", timer.duration());
 
     validate_1st_order_prob_distribution(graph, solver, walk_len);
