@@ -1,8 +1,9 @@
 # FlashMob
 
 FlashMob is a shared-memory graph random walk system,
-an implementation of the paper *Random Walks on Huge Graphs at Cache Efficiency*, published on [SOSP 2021](https://sosp2021.mpi-sws.org/program.html).
+an implementation of the paper *Random Walks on Huge Graphs at Cache Efficiency*, published on SOSP 2021.
 This repository also holds the [artifact](https://github.com/flashmobwalk/flashmob/tree/sosp21-ae) of the paper.
+The paper and its presentation can be found [here](https://sosp2021.mpi-sws.org/program.html).
 
 ## Quick Start
 
