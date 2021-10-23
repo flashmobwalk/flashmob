@@ -1,58 +1,16 @@
 # FlashMob
 
-This repository holds the artifact of the paper "Random Walks on Huge Graphs at Cache Efficiency", published on SOSP 2021.
+FlashMob is a shared-memory graph random walk system,
+an implementation of the paper *Random Walks on Huge Graphs at Cache Efficiency*, published on [SOSP 2021](https://sosp2021.mpi-sws.org/program.html).
+This repository also holds the [artifact](https://github.com/flashmobwalk/flashmob/tree/sosp21-ae) of the paper.
 
-## System Specification
-
-All experiments in the SOSP paper use a Dell PowerEdge R740
-server running Ubuntu 20.04.1 LTS. It has two 2.60GHz Xeon
-Gold 6126 processors, each with 12 cores and 296GB DRAM.
-Each core has a private 32KB L1 and 1MB L2 caches, while
-all cores within a socket share a 19.75MB L3 cache (LLC).
-
-The instructions and evaluations in this document are also verified on two AWS EC2 instances:
-- m5.12xlarge, with Ubuntu Server 20.04 LTS (HVM), SSD Volume Type, 64-bit (x86), 24 cores on 1 NUMA node, and 192GB memory.
-- c5n.18xlarge, with Ubuntu Server 20.04 LTS (HVM), SSD Volume Type, 64-bit (x86), 36 cores on 2 NUMA nodes, and 192GB memory.
-
-### Hardware Requirements
-
-In default the evaluation script will download and evaluate 3 graphs, including Youtube, Twitter, and Friendster.
-To download and evaluate all 3 graphs, at least 64GB DRAM memory and 80GB free disk space are recommended.
-
-Besides, there are 2 larger graphs evaluated in the paper, i.e. UK-Union and Yahoo. To download and evaluate these 2 graphs, 256GB memory and 350GB additional (430GB in total) disk space are recommended.
-
-To evaluate KnightKing on all 5 graphs, additional 64GB (500GB in total) disk space are recommended.
-
-### Expected Time Usage
-
-The compilation, installation, and testing of FlashMob take less than 5 min.
-
-For the Youtube, Twitter and Friendster graphs, on the m5.12xlarge instance, the downloading takes about 65 min.
-And the FlashMob evaluation of random walk of DeepWalk and node2vec takes about 20 min and 35 min, respectively.
-
-For the UK-Union graph, on the Dell PowerEdge R740 server, the downloading takes about 55 min.
-And the FlashMob evaluation of random walk of DeepWalk and node2vec takes about 20 min and 45 min, respectively.
-
-For the Yahoo graph,  on the Dell PowerEdge R740 server, the dataset preparing takes about 35 min.
-And the FlashMob evaluation of random walk of DeepWalk and node2vec takes about 40 min and 130 min, respectively.
-
-On the Dell PowerEdge R740 server, evaluating KnightKing on all 5 graphs takes about 20 hours for DeepWalk and 26 hours for node2vec.
-
-## Setup
+## Quick Start
 
 ### Install Dependencies
 
 ```bash
 sudo apt-get update
 sudo apt-get install cmake g++ autoconf libtool libnuma-dev -y
-```
-
-### Configure the System
-
-To run evaluation on physical cores:
-
-```bash
-sudo sh -c "echo off > /sys/devices/system/cpu/smt/control"
 ```
 
 ### Compile FlashMob
@@ -104,48 +62,6 @@ To download the Youtube, Twitter and Friendster graphs:
 ./bin/download-small.sh ./dataset
 ```
 
-**UK-Union graph**
-
-To download the UK-Union graph:
-
-```bash
-# Java is required to decode the downloaded data
-sudo apt-get install openjdk-8-jdk
-# ./bin/download-uk.sh [data-directory]
-./bin/download-uk.sh ./dataset
-```
-
-**Yahoo graph**
-
-This graph is downloaded from [here](https://webscope.sandbox.yahoo.com/). One needs a Yahoo! account and needs to fill an application to get the graph data.
-
-To request the Yahoo graph:
-
-- Open https://webscope.sandbox.yahoo.com/ in the browser.
-- Click "Graph and Social Data"
-- Find "G2 - Yahoo! AltaVista Web Page Hyperlink Connectivity Graph, circa 2002 (multi part) (Hosted on AWS)"
-- Click "Select this Dataset".
-- Click "Go To Checkout". If the applicant hasn't login, the website will remind the applicant to login or register an account and then repeat the above steps.
-- Follow the requirements of the checkout process, such as answering what the purpose of requiring the dataset is.
-
-After all the process, the applicant then waits for the reply. If the requests get approved, the applicant will receive an email from Yahoo, with a temporary link to download the graph.
-
-The downloaded data are listed below, among which `ydata-yaltavista-webmap-v1_0_links-1.txt.gz` and `ydata-yaltavista-webmap-v1_0_links-2.txt.gz` will be used in this evaluation:
-
-```bash
-├── README
-├── ydata-yaltavista-webmap-v1_0_id_url.txt.gz
-├── ydata-yaltavista-webmap-v1_0_links-1.txt.gz
-└── ydata-yaltavista-webmap-v1_0_links-2.txt.gz
-```
-
-To unzip and format the Yahoo graph for this evaluation, run the following command (substitute [yahoo-directory] with the path of the directory that holds the downloaded Yahoo graphs):
-
-```bash
-# ./bin/prepare-yahoo.sh [yahoo-directory] [data-directory]
-./bin/prepare-yahoo.sh [yahoo-directory] ./dataset
-```
-
 ### Evaluate FlashMob
 
 The script below will evaluate FlashMob on all 5 graphs. If a graph file doesn't exist, the script will skip it and continue to evaluate on other graphs.
@@ -177,54 +93,6 @@ output
     ├── friendster.out.txt
     ├── twitter.out.txt
     └── youtube.out.txt
-```
-
-The evaluation results on the 2 AWS EC2 instances are listed below.
-
-| DeepWalk (ns/step) | Youtube | Twitter | Friendster |
-|--------------------|---------|---------|------------|
-| m5.12xlarge        |  21.87  |  31.30  |    32.88   |
-| c5n.18xlarge       |  21.99  |  29.78  |    31.40   |
-
-| node2vec (ns/step) | Youtube | Twitter | Friendster |
-|--------------------|---------|---------|------------|
-| m5.12xlarge        |  102.95 |  263.64 |   233.67   |
-| c5n.18xlarge       |  106.38 |  320.06 |   272.30   |
-
-### Evaluate KnightKing
-
-Install dependencies:
-
-```bash
-sudo apt-get install -y openmpi-bin libopenmpi-dev python
-```
-
-Install KnightKing:
-
-```bash
-git clone https://github.com/KnightKingWalk/KnightKing.git --recurse-submodules
-# The #walkers will be larger than 2^32
-sed -i 's/typedef uint32_t walker_id_t;/typedef uint64_t walker_id_t;/' ./KnightKing/include/type.hpp
-cd KnightKing
-
-mkdir build && cd build
-cmake ..
-make & make install
-cd ../..
-```
-
-Evaluate DeepWalk:
-
-```bash
-# ./bin/eval_knk.sh [dataset-directory] [output-directory] [app]
-./bin/eval_knk.sh ./dataset ./output/knk/deepwalk deepwalk
-```
-
-Evaluate node2vec:
-
-```bash
-# ./bin/eval_knk.sh [dataset-directory] [output-directory] [app]
-./bin/eval_knk.sh ./dataset ./output/knk/node2vec node2vec
 ```
 
 ## Extended FlashMob Options
@@ -312,26 +180,9 @@ Example usage:
 ./bin/node2vec -f text -g ./dataset/youtube.txt -e 10 -l 80 -p 2 -q 0.5
 ```
 
-## Validation
+## Publication
 
-Validate the functional correctness of FlashMob on randomly generated graphs (expected time usage: 1 min):
-
-```bash
-ctest
-```
-
-Validate the functional correctness of FlashMob on Youtube, Twitter, and Friendster graphs (expected time usage: 24 hours):
-
-```bash
-# ./bin/eval_knk.sh [dataset-directory] [small | large | all]
-./bin/validate-fmob.sh ./dataset small
-```
-
-Validate the functional correctness of FlashMob on UK-Uion and Yahoo graphs (expected time usage: 96 hours):
-```bash
-# ./bin/eval_knk.sh [dataset-directory] [small | large | all]
-./bin/validate-fmob.sh ./dataset large
-```
+Ke Yang, Xiaosong Ma, Saravanan Thirumuruganathan, Kang Chen, Yongwei Wu. Random Walks on Huge Graphs at Cache Efficiency. In ACM SIGOPS 28th Symposium on Operating Systems Principles (SOSP ’21).
 
 ## License
 
