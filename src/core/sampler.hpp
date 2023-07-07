@@ -113,7 +113,7 @@ public:
             p_begin[e_i] = adjunits[rd->gen(degree)].neighbor;
         }
         for (vertex_id_t e_i = 0; e_i < degree; e_i += CacheLineSize / sizeof(AdjUnit)) {
-            _mm_clflushopt(&adjunits[e_i]);
+            _mm_clflush(&adjunits[e_i]);
         }
         h.head = h.end - get_edge_buffer_length(vertex);
     }

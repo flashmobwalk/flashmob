@@ -73,7 +73,9 @@ class FMobSolver{
     vertex_id_t* get_walker_start_vertices(walker_id_t epoch_walker_num) {
         const vertex_id_t v_num = graph->v_num;
         if (walker_start_vertices_num < epoch_walker_num) {
-            wkrm.dealloc_walker_array(walker_start_vertices);
+            if (walker_start_vertices != nullptr) {
+                wkrm.dealloc_walker_array(walker_start_vertices);
+            }
             walker_start_vertices = wkrm.alloc_walker_array<vertex_id_t>();
         }
         walker_start_vertices_num = epoch_walker_num;
